@@ -8,6 +8,6 @@ Gem::Specification.new do |s|
   s.email       = 'jordan_0_0_7@yahoo.com'
   s.files       = ["lib/changer.rb", "lib/currency.rb"]
   s.homepage    =
-    'https://rubygems.org/gems/currency'
+    'https://rubygems.org/gems/changer'
   s.license       = 'MIT'
 end

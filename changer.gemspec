@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'changer'
-  s.version     = '0.0.1'
+  s.version     = '0.1.0'
   s.date        = '2021-01-05'
   s.summary     = "A gem for creating currency objects"
   s.description = "Create currency objects for easy conversion and calculations"

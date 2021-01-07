@@ -1,6 +1,7 @@
 require_relative 'currency'
 class Currency
-  attr_accessor :type, :value
+  attr_accessor :value
+  attr_reader :type
   TYPES = [:usd, :eur, :jpy, :gbp, :aud, :cad, :cnh, :hkd, :nzd, :chf]
 
   def initialize(to_type, value)
@@ -10,10 +11,14 @@ class Currency
     @value = format_value(value)
   end
 
+  def value=(amount)
+    @value = amount.to_f
+  end
+
   def convert(to_type)
     return nil unless TYPES.include?(to_type) 
 
-    new_value = value * fetch_rate(type, to_type)
+    new_value = value * Currency.fetch_rate(type, to_type)
     Currency.new(to_type, new_value) 
   end
 
@@ -27,8 +32,8 @@ class Currency
   def convert!(to_type)
     return nil unless TYPES.include?(to_type) 
 
-    self.value = value * fetch_rate(type, to_type)
-    self.type = to_type
+    self.value = value * Currency.fetch_rate(type, to_type)
+    @type = to_type
     self
   end
 
@@ -36,7 +41,7 @@ class Currency
     return nil unless TYPES.include?(to_type)
 
     self.value = value * rate
-    self.type = to_type  
+    @type = to_type  
     self
   end
 
@@ -52,26 +57,31 @@ class Currency
   # calling the method ie: USD + GBP = USD, but GBP + USD = GBP
   def +(other)
     first_type = self.type
-    new_value = (value + other.convert(first_type).value).round(2)
+    new_value = (value + other.convert(first_type).value)
     Currency.new(first_type, new_value)
   end
 
   def -(other)
     first_type = self.type
-    new_value = (value - other.convert(first_type).value).round(2)
+    new_value = (value - other.convert(first_type).value)
     Currency.new(first_type, new_value)
   end
 
   def *(other)
     first_type = self.type
-    new_value = (value * other.convert(first_type).value).round(2)
+    new_value = (value * other.convert(first_type).value)
     Currency.new(first_type, new_value)
   end
 
   def /(other)
     first_type = self.type
-    new_value = (value / other.convert(first_type).value).round(2)
+    new_value = (value / other.convert(first_type).value)
     Currency.new(first_type, new_value)
+  end
+
+  def self.fetch_rate(from_type, to_type)
+    changer = Changer.new(from_type, to_type)
+    changer.rate
   end
 
   private
@@ -82,16 +92,11 @@ class Currency
   end
 
   def format_value(value)
-    value.to_f.truncate(2)
+    value.to_f
   end
 
   def verify_valid?(to_type, value)
     value >= 0.0 && value < 1_000_000_000_000 && TYPES.include?(to_type)
-  end
-
-  def fetch_rate(from_type, to_type)
-    changer = Changer.new(from_type, to_type)
-    changer.rate
   end
 
   def add_commas(number)

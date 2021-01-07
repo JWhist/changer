@@ -2,13 +2,13 @@ require_relative 'currency'
 class Currency
   attr_accessor :value
   attr_reader :type
-  TYPES = [:usd, :eur, :jpy, :gbp, :aud, :cad, :cnh, :hkd, :nzd, :chf]
+  TYPES = [:usd, :eur, :jpy, :gbp, :aud, :cad, :cny, :hkd, :nzd, :chf]
 
-  def initialize(to_type, value)
-    raise ArgumentError.new("Invalid type or value") unless verify_valid?(to_type, value)
+  def initialize(to_type, amount)
+    raise ArgumentError.new("Invalid type or value") unless verify_valid?(to_type, amount)
 
     @type = to_type
-    @value = format_value(value)
+    @value = format_value(amount)
   end
 
   def value=(amount)
@@ -95,8 +95,10 @@ class Currency
     value.to_f
   end
 
-  def verify_valid?(to_type, value)
-    value >= 0.0 && value < 1_000_000_000_000 && TYPES.include?(to_type)
+  def verify_valid?(to_type, amount)
+    return false unless amount.is_a?(Numeric) && to_type.is_a?(Symbol)
+
+    amount >= 0.0 && TYPES.include?(to_type)
   end
 
   def add_commas(number)

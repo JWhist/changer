@@ -12,6 +12,8 @@ class Currency
   end
 
   def value=(amount)
+    raise ArgumentError.new("Amount must be a non-negative numeric value") unless amount.is_a?(Numeric) && amount >= 0 
+
     @value = amount.to_f
   end
 

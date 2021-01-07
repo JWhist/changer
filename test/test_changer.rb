@@ -25,6 +25,14 @@ class CurrencyTest < MiniTest::Test
     end
   end
 
+  def test_invalid_amount_reassignment
+    bill = Currency.new(:usd, 5)
+    invalid_values = ['', 'abc', nil, -23]
+    invalid_values.each do |amount|
+      assert_raises(ArgumentError) { bill.value = amount }
+    end 
+  end
+
   def test_invalid_types
     types = ['horse', :XXX, 123, nil, '', 'USD', :USD]
     amount = 1

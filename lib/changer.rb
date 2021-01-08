@@ -34,6 +34,7 @@ class Currency
   # Convert to a different currency at a specified rate
   # @param to_type [Symbol]
   # @param rate [Numeric]
+  # @return [Currency] || nil if invalid
   # @note rate is set based on the calling object as a base
   def convert_at(to_type, rate)
     return nil unless TYPES.include?(to_type)
@@ -43,6 +44,7 @@ class Currency
   end
   # Convert the calling object to the currency specified by the to_type param
   # @param to_type [Symbol]
+  # @return [self]
   def convert!(to_type)
     return nil unless TYPES.include?(to_type) 
 
@@ -53,6 +55,7 @@ class Currency
   # Convert the calling object to the currency specified by the to_type param
   # at the rate specified by the rate parameter
   # @param rate [Numeric]
+  # @return [self]
   def convert_at!(to_type, rate)
     return nil unless TYPES.include?(to_type)
 
@@ -73,24 +76,28 @@ class Currency
 
   # All of the math operations return values in the type of currency 
   # calling the method ie: USD + GBP = USD, but GBP + USD = GBP
+  # @return [Currency]
   def +(other)
     first_type = self.type
     new_value = (value + other.convert(first_type).value)
     Currency.new(first_type, new_value)
   end
 
+  # @return [Currency]
   def -(other)
     first_type = self.type
     new_value = (value - other.convert(first_type).value)
     Currency.new(first_type, new_value)
   end
 
+  # @return [Currency]
   def *(other)
     first_type = self.type
     new_value = (value * other.convert(first_type).value)
     Currency.new(first_type, new_value)
   end
 
+  # @return [Currency]
   def /(other)
     first_type = self.type
     new_value = (value / other.convert(first_type).value)
@@ -99,13 +106,14 @@ class Currency
   # Fetch the current exchange rate using the from_type as the base
   # @param from_type [Symbol]
   # @param to_type [Symbol]
+  # @return [Float]
   def self.fetch_rate(from_type, to_type)
     changer = Changer.new(from_type, to_type)
     changer.rate
   end
 
   private
-
+  
   def format_string
     amount = add_commas(format("%.2f",value))
     "#{type.to_s.upcase} #{amount}"

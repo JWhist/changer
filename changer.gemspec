@@ -9,10 +9,10 @@ Gem::Specification.new do |s|
   s.files       = ["lib/changer.rb", "lib/currency.rb"]
   s.homepage    = 'https://github.com/JWhist/changer'
   s.license       = 'MIT'
-  spec.required_ruby_version = ">= 2.4.0"
+  s.required_ruby_version = ">= 2.4.0"
   s.metadata = {
     "documentation_uri" => "https://www.rubydoc.info/gems/changer",
-    "homepage_uri"      => spec.homepage,
+    "homepage_uri"      => s.homepage,
     "source_code_uri"   => "https://github.com/JWhist/changer",
     "bug_tracker_uri"   => "https://github.com/JWhist/changer/issues"
   }

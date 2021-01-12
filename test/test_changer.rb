@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require_relative '../lib/changer'
+require_relative '../lib/currency'
 require 'minitest/reporters'
 Minitest::Reporters.use!
 

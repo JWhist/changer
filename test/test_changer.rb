@@ -7,6 +7,9 @@ class CurrencyTest < MiniTest::Test
   def test_new_returns_currency_object
     bill = Currency.new(:usd, 3)
     assert_equal true, bill.is_a?(Currency)
+
+    bill = Currency.new('usd', 3)
+    assert_equal true, bill.is_a?(Currency)
   end
 
   def test_valid_types

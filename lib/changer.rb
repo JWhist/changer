@@ -1,8 +1,12 @@
 require_relative 'currency'
 class Currency
-  attr_accessor :value
-  attr_reader :type
-  TYPES = [:usd, :eur, :jpy, :gbp, :aud, :cad, :cny, :hkd, :nzd, :chf]
+  attr_reader :type, :value
+  currency_symbols = [:usd, :eur, :jpy, :gbp, :aud, :cad, :cny, :hkd, :nzd, :chf]
+
+  currency_strings = currency_symbols.map(&:to_s)
+
+  TYPES = currency_symbols + currency_strings
+
   # Create a new Currency object
   #
   #
@@ -124,7 +128,8 @@ class Currency
   end
 
   def verify_valid?(to_type, amount)
-    return false unless amount.is_a?(Numeric) && to_type.is_a?(Symbol)
+    return false unless amount.is_a?(Numeric) && 
+      (to_type.is_a?(Symbol) || to_type.is_a?(String))
 
     amount >= 0.0 && TYPES.include?(to_type)
   end

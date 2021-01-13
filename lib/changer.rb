@@ -3,7 +3,7 @@ class Currency
   attr_reader :type, :value
   currency_symbols = [:usd, :eur, :jpy, :gbp, :aud, :cad, :cny, :hkd, :nzd, :chf]
 
-  currency_strings = currency_symbols.map(&:to_s)
+  currency_strings = currency_symbols.map { |sym| sym.to_s.upcase }
 
   TYPES = currency_symbols + currency_strings
 
@@ -30,8 +30,7 @@ class Currency
   # @param to_type [Symbol]
   # @return [Currency] || nil if invalid
   def convert(to_type)
-    return nil unless TYPES.include?(to_type) 
-
+    return nil unless valid_type?(to_type)
     new_value = value * Currency.fetch_rate(type, to_type)
     Currency.new(to_type, new_value) 
   end
@@ -41,7 +40,7 @@ class Currency
   # @return [Currency] || nil if invalid
   # @note rate is set based on the calling object as a base
   def convert_at(to_type, rate)
-    return nil unless TYPES.include?(to_type)
+    return nil unless valid_type?(to_type)
 
     new_value = value * rate
     Currency.new(to_type, new_value)
@@ -50,7 +49,7 @@ class Currency
   # @param to_type [Symbol]
   # @return [self]
   def convert!(to_type)
-    return nil unless TYPES.include?(to_type) 
+    return nil unless valid_type?(to_type)
 
     self.value = value * Currency.fetch_rate(type, to_type)
     @type = to_type
@@ -61,7 +60,7 @@ class Currency
   # @param rate [Numeric]
   # @return [self]
   def convert_at!(to_type, rate)
-    return nil unless TYPES.include?(to_type)
+    return nil unless valid_type?(to_type)
 
     self.value = value * rate
     @type = to_type  
@@ -117,6 +116,10 @@ class Currency
   end
 
   private
+
+  def valid_type?(type)
+    TYPES.include?(type.to_s.upcase)
+  end
   
   def format_string
     amount = add_commas(format("%.2f",value))
@@ -128,10 +131,7 @@ class Currency
   end
 
   def verify_valid?(to_type, amount)
-    return false unless amount.is_a?(Numeric) && 
-      (to_type.is_a?(Symbol) || to_type.is_a?(String))
-
-    amount >= 0.0 && TYPES.include?(to_type)
+    amount.is_a?(Numeric) && valid_type?(to_type) && amount >= 0.0
   end
 
   def add_commas(number)

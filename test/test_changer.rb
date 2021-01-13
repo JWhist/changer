@@ -37,7 +37,7 @@ class CurrencyTest < MiniTest::Test
   end
 
   def test_invalid_types
-    types = ['horse', :XXX, 123, nil, '', 'USD', :USD]
+    types = ['horse', :XXX, 123, nil, '']
     amount = 1
     types.each do |type|
       assert_raises(ArgumentError) { Currency.new(type, amount) }
